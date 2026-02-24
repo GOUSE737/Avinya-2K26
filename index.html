@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVINYA 2K26</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --rainbow: linear-gradient(90deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            --bg-dark: #030305;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow-color: #00ffd5;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+      
+        #network-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at center, #0a0a15 0%, #030305 100%);
+        }
+
+        #sparkle-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; right: 0;
+            padding: 30px 60px;
+            z-index: 100;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-weight: 900;
+            letter-spacing: 12px;
+            background: var(--rainbow);
+            background-size: 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow-anim 10s linear infinite;
+            font-size: 6rem;
+        }
+
+        @keyframes rainbow-anim {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
+
+        .section-header-wrap {
+            padding: 80px 20px 40px;
+            text-align: center;
+        }
+
+        .section-head {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            border-bottom: 2px solid var(--glow-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+      
+        .events-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            opacity: 0;
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
+        }
+
+        .slide-left { transform: translateX(-50px); }
+        .slide-right { transform: translateX(50px); }
+
+        .card.is-visible {
+            opacity: 1;
+            transform: translateX(0) translateY(0);
+        }
+
+        .card-inner {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: border 0.3s ease;
+        }
+
+        .card-inner:hover { border-color: var(--glow-color); }
+
+        .image-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: linear-gradient(45deg, #1a1a2e, #16213e); 
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card-inner:hover .card-img { transform: scale(1.1); }
+
+        .card-body { 
+            padding: 25px; 
+            text-align: center;
+            flex-grow: 1;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .card-body h3 { 
+            font-size: 1.4rem; 
+            margin-bottom: 12px; 
+            color: var(--glow-color); 
+        }
+        
+        .card-body p { 
+            font-size: 0.9rem; 
+            color: #ccc; 
+            line-height: 1.5; 
+        }
+
+        footer {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .hero-title { font-size: 2.5rem; }
+            .section-head { font-size: 1.5rem; letter-spacing: 4px; }
+            .image-container { height: 180px; }
+            body { cursor: auto; }
+            .slide-left, .slide-right { transform: translateY(30px); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="network-canvas"></canvas>
+    <canvas id="sparkle-canvas"></canvas>
+
+    <nav><a href="about/index.html">About</a></nav>
+
+    <section class="hero">
+        <h1 class="hero-title">AVINYA 2K26</h1>
+        <p style="letter-spacing: 12px; opacity: 0.6; text-transform: uppercase;">JNTUHUCEM | CSE</p>
+    </section>
+
+    <div class="section-header-wrap">
+        <h2 class="section-head">Technical Events</h2>
+    </div>
+
+    <div class="events-container">
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="tech quizz.jpg" class="card-img" alt="Technical Quiz"></div>
+                <div class="card-body">
+                    <h3>QuizTech Arena</h3>
+                    <p>Test your knowledge in various technical domains with challenging questions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="debug contest.png" class="card-img" alt="Debugging"></div>
+                <div class="card-body">
+                    <h3>Debugging Contest</h3>
+                    <p>Test your logic by finding and fixing bugs in the shortest time.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="pattern hunters.png" class="card-img" alt="Pattern Guessing"></div>
+                <div class="card-body">
+                    <h3>Pattern Guessing</h3>
+                    <p>Identify and predict patterns in sequences of numbers or shapes.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="code predicor.png" class="card-img" alt="Code Predictor"></div>
+                <div class="card-body">
+                    <h3>Code Predictor</h3>
+                    <p>Guess the output of given code snippets in various programming languages.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="emoji.png" class="card-img" alt="Emoji Decode"></div>
+                <div class="card-body">
+                    <h3>Emoji Decode</h3>
+                    <p>Decode hidden messages in emoji sequences.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="innovative x.png" class="card-img" alt="Innovative X"></div>
+                <div class="card-body">
+                    <h3>Innovative X</h3>
+                    <p>Explore creative and innovative ideas in a competitive environment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-header-wrap">
+        <h2 class="section-head">Non-Technical</h2>
+    </div>
+
+    <div class="events-container">
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="blind.png" class="card-img" alt="Blind Walk"></div>
+                <div class="card-body">
+                    <h3>Blind Walk</h3>
+                    <p>Navigate through a maze without sight, testing your sense of direction.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="ball throw.png" class="card-img" alt="Ball Throw"></div>
+                <div class="card-body">
+                    <h3>Ball Throw</h3>
+                    <p>Test your accuracy and precision in throwing a ball at a target.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="spoon.png" class="card-img" alt="Spoon Drink"></div>
+                <div class="card-body">
+                    <h3>Spoon Drink</h3>
+                    <p>Test your precision in drinking from a spoon without spilling.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="lucky hweel.png" class="card-img" alt="Lucky Wheel"></div>
+                <div class="card-body">
+                    <h3>Lucky Wheel</h3>
+                    <p>Spin the wheel and see what fate awaits you!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="balloon battle.png" class="card-img" alt="Balloon Battle"></div>
+                <div class="card-body">
+                    <h3>Balloon Battle</h3>
+                    <p>Pop balloons in a fun and competitive game.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="disco.png" class="card-img" alt="Disco Room"></div>
+                <div class="card-body">
+                    <h3>Disco Room</h3>
+                    <p>Experience a vibrant disco environment with synchronized lighting.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="tap the .png" class="card-img" alt="Tap The Treasure"></div>
+                <div class="card-body">
+                    <h3>Tap The Treasure</h3>
+                    <p>Tap on hidden treasures to reveal rewards and unlock features.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="balloon.png" class="card-img" alt="Balloon Burst"></div>
+                <div class="card-body">
+                    <h3>Balloon Burst</h3>
+                    <p>Pop balloons using a virtual gun in a fun game.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="find  flag.png" class="card-img" alt="Find the Flag"></div>
+                <div class="card-body">
+                    <h3>Find the Flag</h3>
+                    <p>A thrilling hunt to locate the hidden flag before others.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="rose.png" class="card-img" alt="Rose Dedication"></div>
+                <div class="card-body">
+                    <h3>Rose Dedication</h3>
+                    <p>Dedicate a rose to someone special in this heart-warming event.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card slide-left">
+            <div class="card-inner">
+                <div class="image-container"><img src="dp contest.png" class="card-img" alt="Insta DP"></div>
+                <div class="card-body">
+                    <h3>Insta DP Contest</h3>
+                    <p>Showcase your best profile picture and win the popularity contest.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card slide-right">
+            <div class="card-inner">
+                <div class="image-container"><img src="coin balance.png" class="card-img" alt="Coin Balance"></div>
+                <div class="card-body">
+                    <h3>Coin Balance</h3>
+                    <p>Test your steady hands by balancing coins in tricky situations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <h2 style="letter-spacing: 5px; margin-bottom: 25px;">FOLLOW THE VIBE</h2>
+        <a href="https://www.instagram.com/avinya._.2k26?igsh=bmtpdXJ3eHowaGNz" style="font-size: 3rem; color: #fff;"><i class="fab fa-instagram"></i></a>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        const sCanvas = document.getElementById('sparkle-canvas');
+        const sCtx = sCanvas.getContext('2d');
+        let points = [], particles = [];
+        let pointCount = window.innerWidth < 600 ? 40 : 100;
+
+        function initNetwork() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            sCanvas.width = window.innerWidth; sCanvas.height = window.innerHeight;
+            points = [];
+            for (let i = 0; i < pointCount; i++) {
+                points.push({
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.8, vy: (Math.random() - 0.5) * 0.8, hue: Math.random() * 360
+                });
+            }
+        }
+
+        function drawNetwork() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            points.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy; p.hue += 0.5;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.fillStyle = `hsla(${p.hue}, 100%, 50%, 0.8)`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fill();
+                for (let j = i + 1; j < points.length; j++) {
+                    const p2 = points[j];
+                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 150) {
+                        ctx.strokeStyle = `hsla(${p.hue}, 100%, 50%, ${1 - dist / 150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(drawNetwork);
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.vX = (Math.random() - 0.5) * 2;
+                this.vY = (Math.random() - 0.5) * 2;
+                this.hue = Math.random() * 360;
+                this.life = 1;
+            }
+            update() { this.x += this.vX; this.y += this.vY; this.life -= 0.02; this.hue += 2; }
+            draw() {
+                sCtx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.life})`;
+                sCtx.beginPath(); sCtx.arc(this.x, this.y, this.size, 0, Math.PI*2); sCtx.fill();
+            }
+        }
+
+        const handleMove = (e) => {
+            const x = e.touches ? e.touches[0].clientX : e.clientX;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            for(let i=0; i<3; i++) particles.push(new Particle(x, y));
+        };
+
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('touchmove', handleMove);
+        window.addEventListener('resize', initNetwork);
+
+        function animateSparkles() {
+            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+            for(let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update(); particles[i].draw();
+                if(particles[i].life <= 0) particles.splice(i, 1);
+            }
+            requestAnimationFrame(animateSparkles);
+        }
+
+        initNetwork(); drawNetwork(); animateSparkles();
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 }); 
+
+        document.querySelectorAll('.card').forEach(card => {
+            revealObserver.observe(card);
+        });
+    </script>
+</body>
+</html>
